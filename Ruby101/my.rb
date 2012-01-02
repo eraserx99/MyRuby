@@ -1,5 +1,5 @@
 module My
-  def hello
+  def self.hello
     p "Hello, world! This is My!"
   end
 

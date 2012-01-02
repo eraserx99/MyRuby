@@ -113,7 +113,12 @@ o = Object.new
 p 'yes' if String.is_a? String
 
 point1.extend(My)
-point1.hello
+
+begin
+  point1.hello
+rescue => ex
+  p "#{ex.class}: #{ex.message}, come to rescue!"
+end
 
 begin
   point2.hello
@@ -122,7 +127,12 @@ rescue => ex
 end
 
 Point3D.extend(My)
-Point3D.hello
+
+begin
+  Point3D.hello
+rescue => ex
+  p "#{ex.class}: #{ex.message}, come to rescue!"
+end
 
 begin
   Point3D.hello2
@@ -131,9 +141,27 @@ rescue => ex
 end
 
 Kernel.p "Hello, through Kernel.p"
-p "Hello, through Kernel.p"
+p "Hello, through p directly"
 
 include My
+
 My.hello
+
+begin
+  hello
+rescue => ex
+  p "#{ex.class}: #{ex.message}, come to rescue!"
+end
+
+p self
+p self.class
+
+p Point.class
+
+# class method
 My.hello2
+
+# private instance method
 hello2
+
+p "Done!"
