@@ -81,6 +81,7 @@ Point::NEGATIVE_POINT_X = Point.new(-1, 0)
 p Point::NEGATIVE_POINT_X
 
 class Point3D < Point
+  include Math
 
   def initialize(x, y, z)
     super(x, y)
@@ -153,15 +154,36 @@ rescue => ex
   p "#{ex.class}: #{ex.message}, come to rescue!"
 end
 
+# check the "main" object
 p self
 p self.class
 
-p Point.class
-
-# class method
+# hello2 is defined within module_function
+# hello2 invoked as a class method
 My.hello2
-
-# private instance method
+# hello2 invoked as a private instance method
 hello2
+
+module X
+  module Y
+    module Z
+      include Math
+      p Module.nesting
+      p "Z.ancestors, " + Z.ancestors.to_s
+    end
+  end
+end
+
+p "Point3D.ancestors, " + Point3D.ancestors.to_s
+p "Math.ancestors, " + Math.ancestors.to_s
+
+# Have some fun here
+p "Object is an instance of Class or decedents of Class" if Object.is_a? Class
+p "The class of Object is, " + Object.class.to_s
+p "Class is an instance of Object or decedents of Object " if Class.is_a? Object
+p "The class of Class is, " + Class.class.to_s
+p "Class is an instance of Class of decedents of Class" if Class.is_a? Class
+p "String is an instance of String or decedents of String" if String.is_a? String
+p "The class of String is, " + String.class.to_s
 
 p "Done!"
