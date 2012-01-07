@@ -164,4 +164,7 @@ My.hello2
 # private instance method
 hello2
 
+# metaprogramming
+
+
 p "Done!"
