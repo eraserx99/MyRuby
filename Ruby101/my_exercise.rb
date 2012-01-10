@@ -61,7 +61,7 @@ class Point
   dump("somewhere within the Point class", self)
 
   class << Point
-    dump("somewhere within class << Point", self)
+    dump("with the Point metaclass class << Point", self)
   end
 
   class << Point
@@ -95,7 +95,7 @@ class Point3D < Point
   dump("somewhere within Point3D class", self)
 
   class << Point3D
-    dump("somewhere within class<< Point3D", self)
+    dump("within the Point3D metaclass << Point3D", self)
 
     def Point3D.here()
       dump("class method, here, of Point3D", self)
@@ -103,8 +103,39 @@ class Point3D < Point
   end
 end
 
+Point3D.class_eval { def sayHello; p "sayHello from Point3D!"; end }
+
+begin
+  Point3D.class_eval {
+    begin
+      define_method(:sayHello2) { p "sayHello2 from Point3D!" }
+    rescue =>ex
+      p "#{ex.class}: #{ex.message}, come to rescue!"
+    end
+  }
+rescue => ex
+  p "#{ex.class}: #{ex.message}, come to rescue!"
+end
+
+begin
+  Point3D.class_eval {
+    begin
+      p = Proc.new { p "sayHello3 from Point3D!"}
+      define_method(:sayHello3, &p)
+    rescue =>ex
+      p "#{ex.class}: #{ex.message}, come to rescue!"
+    end
+  }
+rescue => ex
+  p "#{ex.class}: #{ex.message}, come to rescue!"
+end
+
 point3 = Point3D.new(100, 200, 300)
 point3.hey
+point3.sayHello
+point3.sayHello2
+point3.sayHello3
+p "50/50"
 
 Point.sum(point1)
 # sum is defined in the parent class Point, not Point3D
@@ -154,6 +185,18 @@ rescue => ex
   p "#{ex.class}: #{ex.message}, come to rescue!"
 end
 
+begin
+  My.say_hello
+rescue => ex
+  p "#{ex.class}: #{ex.message}, come to rescue!"
+end
+
+begin
+  say_hello
+rescue => ex
+  p "#{ex.class}: #{ex.message}, come to rescue!"
+end
+
 # check the "main" object
 p self
 p self.class
@@ -185,5 +228,22 @@ p "The class of Class is, " + Class.class.to_s
 p "Class is an instance of Class of decedents of Class" if Class.is_a? Class
 p "String is an instance of String or decedents of String" if String.is_a? String
 p "The class of String is, " + String.class.to_s
+
+class Object
+  def eigenclass
+    class << self
+      self
+    end
+  end
+end
+
+p "Point3D's eigenclass => " + Point3D.eigenclass.to_s
+
+begin
+  p point3.binding.to_s
+rescue => ex
+  p "#{ex.class}: #{ex.message}, come to rescue!"
+end
+
 
 p "Done!"
