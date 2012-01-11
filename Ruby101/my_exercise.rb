@@ -325,12 +325,19 @@ module Strict
   end
 end
 
+class Object
+  def test
+    p self.class
+  end
+end
+
 class String3 < String2
   include Final, Strict
 
   def self.singleton_method_added(name)
     p "New class method #{name} is added to " + self.to_s
   end
+
 end
 
 p "#################################"
@@ -388,6 +395,15 @@ p "s3.class.to_s => #{s3.class.to_s}"
 s3.common
 
 class String4 < String3
+  def to_s
+    p "I'm an object of String4"
+  end
+  def still
+    p "still of String4"
+    if block_given?
+      yield
+    end
+  end
 end
 
 class << String4
@@ -416,8 +432,51 @@ end
 # expect nothing from @oh_string3 instance variable unless String4.hi is called first
 String4.really?
 
-m = Mutex.new
+def synchronized(o)
+  if block_given?
+    o.mutex.synchronize { yield }
+  else
+    SynchronizedObject.new(o)
+  end
+end
 
+class SynchronizedObject < BasicObject
+  def initialize(o)
+    @delegate = o
+  end
+  def __delegate
+    @delegate
+  end
+  def method_missing(*args, &block)
+    @delegate.mutex.synchronize {
+      @delegate.send *args, &block
+    }
+  end
+end
+
+class Object
+  def mutex
+    return @__mutex if @__mutex
+    synchronized(self.class) {
+      @__mutex = @__mutex || Mutex.new
+    }
+  end
+end
+
+Class.instance_eval { @__mutex = Mutex.new }
+
+s4 = String4.new
+s4.test
+
+synchronized(s4) {
+  p "within the synchronized block!!!"
+}
+
+s4 = synchronized(s4)
+s4.still
+s4.still { p "hihihi!"}
+
+m = Mutex.new
 a = Thread.new {
   m.synchronize {
 

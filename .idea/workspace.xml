@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1fba05ff-4606-4af0-b391-0caf7a4c1325" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Ruby101/my.rb" afterPath="$PROJECT_DIR$/Ruby101/my.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Ruby101/my_exercise.rb" afterPath="$PROJECT_DIR$/Ruby101/my_exercise.rb" />
     </list>
     <ignored path="MyRuby.iws" />
@@ -39,7 +38,7 @@
       <file leaf-file-name="my_exercise.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Ruby101/my_exercise.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="420" column="18" selection-start="8679" selection-end="8679" vertical-scroll-proportion="0.45146728">
+            <state line="474" column="26" selection-start="9494" selection-end="9494" vertical-scroll-proportion="0.41410488">
               <folding />
             </state>
           </provider>
@@ -91,6 +90,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Favorites" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -126,7 +126,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Favorites" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -143,15 +142,15 @@
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="200" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="994" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="992" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="994" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="198" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="194" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RunManager" selected="Ruby.my_exercise">
     <configuration default="false" name="my_exercise" type="RubyRunConfigurationType" factoryName="Ruby" temporary="true">
@@ -331,16 +330,16 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="643" y="287" width="1870" height="1037" extended-state="0" />
+    <frame x="342" y="248" width="1870" height="1121" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16522211" sideWeight="0.52698416" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16522211" sideWeight="0.56559765" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.47301587" sideWeight="0.9994076" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.43440235" sideWeight="0.9994076" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -398,14 +397,12 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Ruby101/my.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="14" selection-start="144" selection-end="144" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="9" column="14" selection-start="144" selection-end="144" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Ruby101/my_exercise.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="420" column="18" selection-start="8679" selection-end="8679" vertical-scroll-proportion="0.45146728">
+        <state line="474" column="26" selection-start="9494" selection-end="9494" vertical-scroll-proportion="0.41410488">
           <folding />
         </state>
       </provider>
