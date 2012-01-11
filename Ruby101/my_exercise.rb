@@ -1,4 +1,5 @@
 require "./my"
+require "thread"
 
 def dump(where, arg)
   raise ArgumentError if where == nil || arg == nil
@@ -14,7 +15,7 @@ class Class
   alias oldNew new
 
   def new(*args)
-    dump("creating a new class instance", self)
+    # dump("creating a new class instance", self)
     oldNew(*args)
   end
 end
@@ -40,6 +41,7 @@ class Point
   end
 
   def coerce(other)
+    p "coerce function of Point"
     [self, other]
   end
 
@@ -55,18 +57,12 @@ class Point
   def hi()
     dump("instance method, hi, of Point", self)
   end
-
   private :hi
 
-  dump("somewhere within the Point class", self)
-
   class << Point
-    dump("with the Point metaclass class << Point", self)
+    dump("within the Point metaclass class << Point", self)
   end
 
-  class << Point
-    dump("another place within class << Point", self)
-  end
 end
 
 point1 = Point.new(10, 20)
@@ -92,23 +88,20 @@ class Point3D < Point
     dump("instance method, hey, of Point3D", self)
   end
 
-  dump("somewhere within Point3D class", self)
-
   class << Point3D
-    dump("within the Point3D metaclass << Point3D", self)
-
+    dump("within the Point3D metaclass class << Point3D", self)
     def Point3D.here()
       dump("class method, here, of Point3D", self)
     end
   end
 end
 
-Point3D.class_eval { def sayHello; p "sayHello from Point3D!"; end }
+Point3D.class_eval { def never_say_never; p "never_say_never from Point3D!"; end }
 
 begin
   Point3D.class_eval {
     begin
-      define_method(:sayHello2) { p "sayHello2 from Point3D!" }
+      define_method(:never_say_never2) { p "never_say_nerver2 from Point3D!" }
     rescue =>ex
       p "#{ex.class}: #{ex.message}, come to rescue!"
     end
@@ -120,8 +113,8 @@ end
 begin
   Point3D.class_eval {
     begin
-      p = Proc.new { p "sayHello3 from Point3D!"}
-      define_method(:sayHello3, &p)
+      p = Proc.new { p "never_say_nerver3 from Point3D!"}
+      define_method(:never_say_never3, &p)
     rescue =>ex
       p "#{ex.class}: #{ex.message}, come to rescue!"
     end
@@ -132,9 +125,9 @@ end
 
 point3 = Point3D.new(100, 200, 300)
 point3.hey
-point3.sayHello
-point3.sayHello2
-point3.sayHello3
+point3.never_say_never
+point3.never_say_never2
+point3.never_say_never3
 p "50/50"
 
 Point.sum(point1)
@@ -142,7 +135,14 @@ Point.sum(point1)
 Point3D.sum(point3)
 
 o = Object.new
-p 'yes' if String.is_a? String
+p 'yes, String is_a String' if String.is_a? String
+p 'yes, String is_a Object' if String.is_a? Object
+p 'yes, String is_a Module' if String.is_a? Module
+p 'yes, String is_a Class' if String.is_a? Class
+# String is an instance of Class
+p "String's class is => " + String.class.to_s
+# 1 is an instance of Fixnum class
+p "1's class is => " + 1.class.to_s
 
 point1.extend(My)
 
@@ -160,39 +160,86 @@ end
 
 Point3D.extend(My)
 
-begin
-  Point3D.hello
-rescue => ex
-  p "#{ex.class}: #{ex.message}, come to rescue!"
+p "#################################"
+p "public methods of Point3D"
+p Point3D.public_instance_methods
+p "private methods of Point3D"
+p Point3D.private_instance_methods
+p "singleton methods of Point3D"
+p Point3D.singleton_methods
+p "#################################"
+
+class NoneSense
+  include My
+  def none_public
+  end
+
+  private
+  def none_private
+  end
+
+  protected
+  def none_protected
+  end
 end
 
-begin
-  Point3D.hello2
-rescue => ex
-  p "#{ex.class}: #{ex.message}, come to rescue!"
-end
+p "#################################"
+p "instance methods of NoneSense"
+p NoneSense.instance_methods
+p "public methods of NoneSense"
+p NoneSense.public_instance_methods
+p "private methods of NoneSense"
+p NoneSense.private_instance_methods
+p "singleton methods of NoneSense"
+p NoneSense.singleton_methods
+p "#################################"
+
+ns = NoneSense.new
+ns.say_hello2
 
 Kernel.p "Hello, through Kernel.p"
 p "Hello, through p directly"
 
 include My
 
+def test
+end
+
+p "#################################"
+p "public methods of main object"
+p self.public_methods
+p "private methods of main object"
+p self.private_methods
+p "private class methods of the class of main object"
+p self.class.singleton_methods
+p "#################################"
+
 My.hello
 
 begin
+  p "hello"
   hello
 rescue => ex
   p "#{ex.class}: #{ex.message}, come to rescue!"
 end
 
 begin
+  p "My.say_hello =>"
   My.say_hello
 rescue => ex
   p "#{ex.class}: #{ex.message}, come to rescue!"
 end
 
 begin
+  p "say_hello =>"
   say_hello
+rescue => ex
+  p "#{ex.class}: #{ex.message}, come to rescue!"
+end
+
+begin
+  p "say_hello2 =>"
+  self.say_hello2
 rescue => ex
   p "#{ex.class}: #{ex.message}, come to rescue!"
 end
@@ -202,7 +249,7 @@ p self
 p self.class
 
 # hello2 is defined within module_function
-# hello2 invoked as a class method
+# hello2 invoked as a class method of the module My
 My.hello2
 # hello2 invoked as a private instance method
 hello2
@@ -245,5 +292,138 @@ rescue => ex
   p "#{ex.class}: #{ex.message}, come to rescue!"
 end
 
+def Object.inherited(c)
+  puts "inherited is called, class #{c} < #{self}"
+end
+
+class String2 < String
+end
+
+module Final
+  def self.included(c)
+    p "Final self.included!"
+    c.instance_eval do
+      def inherited(sub)
+        p caller[0].to_s
+        raise Exception, "Attempt to create subclass #{sub} of Final class #{self}"
+      end
+    end
+  end
+
+  def self.extended(o)
+    p "Final self.extended!"
+  end
+
+  class << Final
+    p "within the metaclass class << Final => " + self.to_s
+  end
+end
+
+module Strict
+  def singleton_method_added(name)
+    p "singleton #{name} added to object, " + self.object_id.to_s
+  end
+end
+
+class String3 < String2
+  include Final, Strict
+
+  def self.singleton_method_added(name)
+    p "New class method #{name} is added to " + self.to_s
+  end
+end
+
+p "#################################"
+p "public methods of String3"
+p String3.public_instance_methods
+p "private methods of String3"
+p String3.private_instance_methods
+p "singleton methods of String3"
+p String3.singleton_methods
+p "#################################"
+
+def String3.new_s_method()
+end
+
+s3 = String3.new
+def s3.another_s_method()
+end
+
+class << s3
+  p "really, " + self.to_s
+end
+
+begin
+  class String4 < String3
+  end
+  rescue Exception => ex
+    p "#{ex.class}: #{ex.message}, come to rescue!"
+end
+
+p "#################################"
+p "public methods of My"
+p My.public_instance_methods
+p "private methods of My"
+p My.private_instance_methods
+p "singleton methods of My"
+p My.singleton_methods
+p "#################################"
+
+String3.instance_eval { @oh_string3 = "string3" }
+String3.instance_eval { p @oh_string3 }
+
+String3.instance_eval { def really? ; p "this is @oh_string3 #{@oh_string3}"; end }
+String3.really?
+
+class String3
+  def common
+    # @oh_string3 is not an instance variable of String3
+    # nil should be the value expected
+    p @oh_string3
+  end
+end
+
+s3 = String3.new
+p "s3.class.to_s => #{s3.class.to_s}"
+s3.common
+
+class String4 < String3
+end
+
+class << String4
+  p self.to_s
+  p self.superclass.to_s
+  p self.class.to_s
+  p self.superclass.class.to_s
+
+  p "#################################"
+  p "public methods of class << String4"
+  p self.public_instance_methods
+  p "private methods of class << String4"
+  p self.private_instance_methods
+  p "singleton methods of class << String4"
+  p self.singleton_methods
+  p "#################################"
+
+  def hi
+    @oh_string3 = "hi"
+  end
+end
+
+# instance variables are not inherited
+# they come to live when they're assigned with values
+# usually, it's done within the "inherited" methods
+# expect nothing from @oh_string3 instance variable unless String4.hi is called first
+String4.really?
+
+m = Mutex.new
+
+a = Thread.new {
+  m.synchronize {
+
+  }
+}
+
+sleep(3)
 
 p "Done!"
