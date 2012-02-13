@@ -1,5 +1,6 @@
 class Point3D < Point
   include Math
+  attr_reader :z
 
   def initialize(x, y, z)
     super(x, y)
