@@ -35,5 +35,6 @@ class Point
 
   class << Point
   end
-
 end
+
+Point::NEGATIVE_POINT_X = Point.new(-1, 0)
