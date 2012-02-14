@@ -166,4 +166,24 @@ describe "basics" do
     point.what(30).should == 30
   end
   
+  # Ruby 1.9, block parameter assignment is not the same as the parallel assignment
+  it "Ruby 1.9 block assignment is not the same as the parallel assignment" do
+    def two; yield 10, 20; end
+    
+    # With the parallel assignment, x = 10, 20 will turn x to [10, 20]
+    two do |x|
+      x.should == 10
+    end
+    
+    # Uses the * to group the values together
+    two do |*x|
+      x.should == [10, 20]
+    end
+  end
+    
+  # Ruby 1.9 new block syntax allowing default values assigned to parameters
+  it "Ruby 1.9, new block synatx allowing default values assigned to parameters" do
+    [1, 2, 3].each &->(x, y = 10) { (x * y). should == x * 10 }  
+  end
+  
 end
