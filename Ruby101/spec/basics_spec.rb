@@ -186,4 +186,93 @@ describe "basics" do
     [1, 2, 3].each &->(x, y = 10) { (x * y). should == x * 10 }  
   end
   
+  # Ruby 1.9 new lambda literal syntax
+  it "Ruby 1.9, new lambda literal syntax" do
+    l = ->(x) { x * x }
+    l.call(100).should == 100 * 100
+    
+    # prefix the lambda literal with & when using it like a block
+    [10, 20, 30].each &->(x, y = 100) {  (x + y ).should == x + 100}
+  end
+  
+  # Proc equality
+  it "Proc equality" do
+    (lambda { |x| x*x } == lambda { |x| x*x }).should_not == true
+    
+    p = lambda { |x| x * x}
+    q = p.dup
+    p.should == q
+    # Duplicated object is still a distinct one compared to the original
+    p.object_id.should_not == q.object_id
+  end
+  
+  # return in a proc or a lambda behaves differently
+  it "return behaviour within a proc or a lambda is different" do
+    def makeProc(num)
+      Proc.new { return num}
+    end
+    
+    def makeLambda(num)
+      lambda { return num }
+    end
+    
+    # return within a proc might cause the LocalJumpError exception
+    # The lexically enclosing method makeProc has already returned
+    p = makeProc(99)
+    lambda{ p.call }.should raise_error(LocalJumpError)
+    # return within a lambda works like the return of a method invocation
+    l = makeLambda(99)
+    l.call.should == 99
+  end
+  
+  # break behaves differently within a regular block, a proc, or a lambda
+  it "break behaviour within a proc" do
+    def one; yield 10; end
+    
+    # A top-level break is just like a return
+    result = one { |x| break x * x }
+    result.should == 100
+    
+    # The iterator, Proc.new, has already returned
+    # LocalJumpError is thrown in this case
+    p = Proc.new { |x| break x * x }
+    lambda{ p.call(10) }.should raise_error(LocalJumpError)
+    
+    # However, this works
+    def two(&p)
+      p.call(10)
+    end
+    result = two { |x| break x * x }
+    result.should == 100
+    
+    # A top-level break is just like a return
+    l = lambda{ |x| break x * x }
+    l.call(10).should == 100
+  end
+  
+  # next behaves...
+  it "next behaviour within a proc" do
+    def one
+      [1, 3, 5].inject(0) { |total, x| 
+        r = yield x
+        total += r
+      }
+    end
+    
+    # break causes the iterator to return
+    result = one { |x| break x * x }
+    result.should == 1
+    
+    # next causes the yield statement to return
+    result = one { |x| next x * x }
+    result.should == 35
+    
+    # next causes the call of the proc to return
+    p = Proc.new { |x| next x * x }
+    p.call(10).should == 100
+    
+    # next causes the call of the lambda to return
+    l = lambda { |x| next x * x }
+    l.call(10).should == 100
+  end
 end
