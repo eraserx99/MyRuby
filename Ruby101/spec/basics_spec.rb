@@ -100,10 +100,20 @@ describe "basics" do
     # Invokes :move on the point object
     point.move.should == nil
     
+    # Removes the singleton method :move
+    class << point
+      remove_method(:move)
+    end
+    
     # :bounce is a singleton method of Point class
     Point.instance_eval("def bounce; ; end")
     Point.public_instance_methods.should_not include(:bounce)
     Point.singleton_methods.should include(:bounce)
+    
+    # Removes the class method :bounce
+    class << Point
+      remove_method(:bounce)
+    end
   end
   
   # class_eval runs at the module- / class-level
@@ -112,6 +122,20 @@ describe "basics" do
     Point.class_eval("def show; ; end")
     Point.public_instance_methods.should include(:show)
     Point.singleton_methods.should_not include(:show)    
+    
+    # Removes the instance method :show
+    Point.send :remove_method, :show
+    
+    # Defines an instance method :add_them_up
+    Point.class_eval {
+      define_method(:add_them_up) { |pos| 
+        @x + @y + pos
+      }
+    }
+    point = Point.new(10, 20)
+    point.add_them_up(30).should == 60
+    # Removes the instance method :add_them_up
+    Point.send :remove_method, :add_them_up
   end
   
   # instance_exec evaluates a block of code at the instance-level
@@ -129,5 +153,16 @@ describe "basics" do
     end
     Point::WHERE.should == :WHERE
   end
+  
+  it "method_missing" do
+    Point.class_eval {
+      def method_missing(m, *args, &block)
+        args[0]
+      end
+    }
+  end
+  
+  point = Point.new(10, 20)
+  point.what(30).should = 30
   
 end
