@@ -154,15 +154,16 @@ describe "basics" do
     Point::WHERE.should == :WHERE
   end
   
+  # method_missing can be very interesting......
   it "method_missing" do
     Point.class_eval {
       def method_missing(m, *args, &block)
         args[0]
       end
     }
+    
+    point = Point.new(10, 20)
+    point.what(30).should == 30
   end
-  
-  point = Point.new(10, 20)
-  point.what(30).should = 30
   
 end
