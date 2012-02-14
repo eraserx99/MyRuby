@@ -251,7 +251,7 @@ describe "basics" do
   end
   
   # next behaves...
-  it "next behaviour within a proc" do
+  it "next behaviour within a proc or a lambda" do
     def one
       [1, 3, 5].inject(0) { |total, x| 
         r = yield x
