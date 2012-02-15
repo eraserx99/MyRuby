@@ -209,20 +209,41 @@ describe "basics" do
   # return within a proc or a lambda behaves differently
   it "return behaviour within a proc or a lambda is different" do
     def makeProc(num)
-      Proc.new { return num}
+      Proc.new { |x| return x * num}
     end
     
     def makeLambda(num)
-      lambda { return num }
+      lambda { |x| return x * num }
     end
+    
+    def one(&p)
+      [1, 3, 5].inject(0) { |total, x| 
+        r = p.call(x)
+        total += r
+      }
+    end
+    
+    def two(&p)
+      [1, 3, 5].inject(0) { |total, x| 
+        r = yield x
+        total += r
+      }
+    end   
     
     # return within a proc might cause the LocalJumpError exception
     # The lexically enclosing method makeProc has already returned
-    p = makeProc(99)
-    lambda{ p.call }.should raise_error(LocalJumpError)
+    p = makeProc(1)
+    lambda{ p.call(1) }.should raise_error(LocalJumpError)
+    lambda{ one(&p) }.should raise_error(LocalJumpError)
+    lambda{ two(&p) }.should raise_error(LocalJumpError)
+    
     # return within a lambda works like the return of a method invocation
-    l = makeLambda(99)
-    l.call.should == 99
+    l = makeLambda(1)
+    l.call(1).should == 1
+    one(&l).should == 9
+    # Notices the difference of One and Two
+    # call versus yield   
+    lambda { two(&l).should }.should raise_error(LocalJumpError)
   end
   
   # break behaves differently within a proc or a lambda
@@ -233,7 +254,14 @@ describe "basics" do
         total += r
       }
     end
-
+    
+    def two(&p)
+      [1, 3, 5].inject(0) { |total, x| 
+        r = yield x
+        total += r
+      }
+    end
+    
     # break causes the iterator to return
     result = one { |x| break x * x }
     result.should == 1
@@ -241,10 +269,14 @@ describe "basics" do
     p = Proc.new { |x| break x * x }
     lambda{ p.call(10) }.should raise_error(LocalJumpError)
     lambda{ one(&p) }.should raise_error(LocalJumpError)
+    lambda{ two(&p) }.should raise_error(LocalJumpError)
     
     l = lambda { |x| break x * x }
     l.call(10).should == 100
     one(&l).should == 35
+    # Notices the difference of One and Two
+    # call versus yield
+    lambda { two(&l).should }.should raise_error(LocalJumpError)
   end
   
   # next behaves the same within a proc or a lambda
@@ -256,6 +288,13 @@ describe "basics" do
       }
     end
     
+    def two(&p)
+      [1, 3, 5].inject(0) { |total, x| 
+        r = yield x
+        total += r
+      }
+    end
+    
     # next causes the yield statement to return or the call of the proc to return
     result = one { |x| next x * x }
     result.should == 35
@@ -263,9 +302,11 @@ describe "basics" do
     # next causes the yield statement to return or the call of the proc to return
     p = Proc.new { |x| next x * x }
     one(&p).should == 35
-    
+    two(&p).should == 35
+   
     # next causes the yield statement to return or the call of the proc to return
     l = lambda { |x| next x * x }
     one(&l).should == 35
+    two(&l).should == 35
   end
 end
