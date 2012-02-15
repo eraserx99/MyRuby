@@ -206,7 +206,7 @@ describe "basics" do
     p.object_id.should_not == q.object_id
   end
   
-  # return in a proc or a lambda behaves differently
+  # return within a proc or a lambda behaves differently
   it "return behaviour within a proc or a lambda is different" do
     def makeProc(num)
       Proc.new { return num}
@@ -225,54 +225,47 @@ describe "basics" do
     l.call.should == 99
   end
   
-  # break behaves differently within a regular block, a proc, or a lambda
-  it "break behaviour within a proc" do
-    def one; yield 10; end
-    
-    # A top-level break is just like a return
-    result = one { |x| break x * x }
-    result.should == 100
-    
-    # The iterator, Proc.new, has already returned
-    # LocalJumpError is thrown in this case
-    p = Proc.new { |x| break x * x }
-    lambda{ p.call(10) }.should raise_error(LocalJumpError)
-    
-    # However, this works
-    def two(&p)
-      p.call(10)
-    end
-    result = two { |x| break x * x }
-    result.should == 100
-    
-    # A top-level break is just like a return
-    l = lambda{ |x| break x * x }
-    l.call(10).should == 100
-  end
-  
-  # next behaves...
-  it "next behaviour within a proc or a lambda" do
-    def one
+  # break behaves differently within a proc or a lambda
+  it "break behaviour within a proc or a lambda is different" do   
+    def one(&p)
       [1, 3, 5].inject(0) { |total, x| 
-        r = yield x
+        r = p.call(x)
         total += r
       }
     end
-    
+
     # break causes the iterator to return
     result = one { |x| break x * x }
     result.should == 1
     
-    # next causes the yield statement to return
+    p = Proc.new { |x| break x * x }
+    lambda{ p.call(10) }.should raise_error(LocalJumpError)
+    lambda{ one(&p) }.should raise_error(LocalJumpError)
+    
+    l = lambda { |x| break x * x }
+    l.call(10).should == 100
+    one(&l).should == 35
+  end
+  
+  # next behaves the same within a proc or a lambda
+  it "next behaviour within a proc or a lambda is the same" do
+    def one(&p)
+      [1, 3, 5].inject(0) { |total, x| 
+        r = p.call(x)
+        total += r
+      }
+    end
+    
+    # next causes the yield statement to return or the call of the proc to return
     result = one { |x| next x * x }
     result.should == 35
     
-    # next causes the call of the proc to return
+    # next causes the yield statement to return or the call of the proc to return
     p = Proc.new { |x| next x * x }
-    p.call(10).should == 100
+    one(&p).should == 35
     
-    # next causes the call of the lambda to return
+    # next causes the yield statement to return or the call of the proc to return
     l = lambda { |x| next x * x }
-    l.call(10).should == 100
+    one(&l).should == 35
   end
 end
