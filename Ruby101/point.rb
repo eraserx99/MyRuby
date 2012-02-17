@@ -34,6 +34,8 @@ class Point
   private :hi
 
   class << Point
+    def two
+    end
   end
 end
 

@@ -11,7 +11,7 @@ class Point3D < Point
   end
 
   class << Point3D
-    def Point3D.here()
+    def three 
     end
   end
 end
