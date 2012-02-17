@@ -309,4 +309,54 @@ describe "basics" do
     one(&l).should == 35
     two(&l).should == 35
   end
+  
+  it "Hooks......" do
+    module Strict
+      def singleton_method_added(name)
+        eigenclass = class << self; self; end
+        eigenclass.class_eval {
+          # Supposedly, we don't need "unless" here
+          remove_method name unless name.eql?(:singleton_method_added)
+        } 
+      end
+    end
+    
+    point = Point.new(10, 20)
+    
+    # Adds a singleton method to the object
+    # It should not invoke the singleton_method_added method of Strict
+    def point.guess
+    end   
+    point.singleton_methods.should include(:guess)
+    
+    # Removes the newly added method
+    class << point
+      remove_method :guess
+    end
+   
+    # Includes the Strict module 
+    class Point
+      include Strict
+      def Point.singleton_method_added(name)
+        eigenclass = class << self; self; end
+        eigenclass.class_eval { 
+          # The singleton_method_added gets called even when the Point.singleton_method_added 
+          # is defined at the very first time
+          remove_method name unless name.eql?(:singleton_method_added)
+        }
+      end
+    end
+    
+    # Adds a singleton method to the Class
+    # It should not invoke the sigleton_method_added method of strict
+    def Point.what
+    end
+    Point.singleton_methods.should_not include (:what)
+ 
+    # Adds a singleton method to the object
+    # It should invoke the singleton_method_added method of Strict
+    def point.what
+    end
+    point.singleton_methods.should_not include (:what)
+  end
 end
