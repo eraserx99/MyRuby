@@ -91,6 +91,20 @@ describe "basics" do
     String.is_a?(String).should_not == true
   end
   
+  it "Another way to define class instance variables" do
+    # Checks Point source code, a standard way to define the class instance variable
+    Point.instance_variable_defined?(:@count).should == true
+    
+    # Instance variable :@two has not been brought to life
+    Point.instance_variable_defined?(:@two).should_not == true
+    # Brings the :@two instance variable to life
+    Point.two
+    # Now :@two is a class instance variable of Point
+    Point.instance_variable_defined?(:@two).should == true
+    # Class instance variable is not accessible from the subclass
+    Point3D.instance_variable_defined?(:@two).should_not == true
+  end
+  
   # Module.nesting is lexical-based
   it "Module.netsting is lexical-based" do
     module M

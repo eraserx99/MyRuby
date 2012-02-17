@@ -12,6 +12,7 @@ class Point3D < Point
 
   class << Point3D
     def three 
+      @three = 3
     end
   end
 end
