@@ -14,7 +14,7 @@ describe "basics" do
   it "=== and is_a? are alike" do
     point3d = Point3D.new(10, 20, 30)
     # Compares with the object identify and they are not equivalent
-    (point3d == Point).should_not == true
+    (point3d == Point3D).should_not == true
     # Class inheritance counts here
     (Point === point3d).should == true
     point3d.is_a?(Point).should == true
@@ -32,6 +32,19 @@ describe "basics" do
     Module.superclass.should == Object
     Object.superclass.should == BasicObject
     BasicObject.superclass.should == nil
+
+    # Point3D's superclass is Point    
+    Point3D.ancestors.should_not include(Module)
+    # Point3D.class is Class
+    Point3D.class.ancestors.should include(Module)
+  end
+  
+  it "metalclass / singleton class hierarchy......" do
+    class << Point3D
+      self.to_s.should == "#<Class:Point3D>"
+      self.superclass.to_s.should == "#<Class:Point>"
+      self.superclass.superclass.to_s.should == "#<Class:Object>"
+    end
   end
   
   it "self is mysterious......" do
@@ -76,6 +89,20 @@ describe "basics" do
     String.is_a?(Class).should == true
     # String is an object of Class class, not an object of String class
     String.is_a?(String).should_not == true
+  end
+  
+  it "Another way to define class instance variables" do
+    # Checks Point source code, a standard way to define the class instance variable
+    Point.instance_variable_defined?(:@count).should == true
+    
+    # Instance variable :@two has not been brought to life
+    Point.instance_variable_defined?(:@two).should_not == true
+    # Brings the :@two instance variable to life
+    Point.two
+    # Now :@two is a class instance variable of Point
+    Point.instance_variable_defined?(:@two).should == true
+    # Class instance variable is not accessible from the subclass
+    Point3D.instance_variable_defined?(:@two).should_not == true
   end
   
   # Module.nesting is lexical-based

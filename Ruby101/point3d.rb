@@ -11,7 +11,8 @@ class Point3D < Point
   end
 
   class << Point3D
-    def Point3D.here()
+    def three 
+      @three = 3
     end
   end
 end

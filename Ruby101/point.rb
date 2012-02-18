@@ -1,5 +1,6 @@
 class Point
   attr_reader :x, :y
+  @count = 100
 
   def initialize(x, y)
     @x = x
@@ -34,6 +35,9 @@ class Point
   private :hi
 
   class << Point
+    def two
+      @two = 2
+    end
   end
 end
 
