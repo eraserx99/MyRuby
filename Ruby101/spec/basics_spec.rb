@@ -39,21 +39,25 @@ describe "basics" do
     Point3D.class.ancestors.should include(Module)
   end
   
-  it "metalclass / singleton class hierarchy......" do
+  it "metaclass / singleton class hierarchy......" do
     class << Point3D
+      self.class.should == Class	
       self.to_s.should == "#<Class:Point3D>"
       self.superclass.to_s.should == "#<Class:Point>"
+      self.superclass.class == Class
       self.superclass.superclass.to_s.should == "#<Class:Object>"
+      self.superclass.superclass.class.should == Class 
+      self.superclass.superclass.superclass.to_s.should == "#<Class:BasicObject>"
+      self.superclass.superclass.superclass.class.should == Class 
+      # the superclass of #<Class:BasicObject> is Class !!!
+      self.superclass.superclass.superclass.superclass.to_s.should == "Class"
+      self.superclass.superclass.superclass.superclass.class.should == Class
+      self.superclass.superclass.superclass.superclass.superclass.to_s.should == "Module"
+      self.superclass.superclass.superclass.superclass.superclass.class.should == Class 
     end
   end
   
   it "self is mysterious......" do
-    class Point
-      def get_self
-        self
-      end
-    end
-    
     class << Point
       def get_self
         self

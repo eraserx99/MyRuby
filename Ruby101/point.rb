@@ -23,16 +23,16 @@ class Point
     p "coerce function of Point"
     [self, other]
   end
+  
+  def hi()
+  end
+  private :hi
 
   def Point.here()
   end
 
   def Point.sum(*points)
   end
-
-  def hi()
-  end
-  private :hi
 
   class << Point
     def two
