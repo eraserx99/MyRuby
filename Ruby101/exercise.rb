@@ -12,26 +12,23 @@ class Point
   end
 end
 
+def dump_superclass(s)
+  begin
+    p s
+    s = s.superclass
+  end until s == nil
+end
+
 class Point3D < Point
   class << self
     def hi3
     end
     class << self
       class << self
-        p self
-        p self.singleton_methods
+          class << self
+              dump_superclass(self)
+          end
       end
-      p self
-      p self.superclass
-      p self.superclass.superclass
-      p self.superclass.superclass.superclass
-      p self.superclass.superclass.superclass.superclass
-      p self.superclass.superclass.superclass.superclass.superclass
-      p self.superclass.superclass.superclass.superclass.superclass.superclass
-      p self.superclass.superclass.superclass.superclass.superclass.superclass.superclass
-      p self.superclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass
-      p self.superclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass
-      p self.superclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass.superclass
     end
     p "====== within class << Point3D ======"
     p "self.instance_of?(Class) => #{self.instance_of?(Class)}"
