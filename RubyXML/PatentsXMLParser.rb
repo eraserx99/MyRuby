@@ -33,6 +33,12 @@ class PatentsXMLParser
     @doc = Nokogiri::HTML(@text)
   end
   
+  # Extract the inner text element of the node
+  def extract_PDA(node)
+    node.inner_text
+  end
+  private :extract_PDA
+  
   def text
     @text
   end
@@ -51,28 +57,32 @@ class PatentsXMLParser
   
   # B110 - number of document
   def pub_num
-    node = @doc.xpath("//b110")
-    node.to_html
+    node = @doc.at_xpath("//b110")
+    extract_PDA(node)
   end
     
   # B130 - kind of document
   def pub_kind
-    
+    node = @doc.at_xpath("//b130")
+    extract_PDA(node)
   end
   
   # B140 - date of publication
   def pub_date
-    
+    node = @doc.at_xpath("//b140")
+    extract_PDA(node)
   end
 
   # B190 - publishing country or organization
   def pub_country_or_organization
-    
+    node = @doc.at_xpath("//b190")
+    extract_PDA(node)
   end
   
   # B220 - application filing date  
   def filing_date
-    
+    node = @doc.at_xpath("//b220")
+    extract_PDA(node)
   end
   
   def pub_classes
